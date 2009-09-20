@@ -1,4 +1,4 @@
-AC_INIT([befunge], [0.1.0], [sudharsh@gmail.com], [befunge])
+AC_INIT([fungi], [0.1.0], [sudharsh@gmail.com], [fungi])
 AC_CONFIG_SRCDIR([Makefile.am])
 AC_CONFIG_HEADERS(config.h)
 AM_INIT_AUTOMAKE([dist-bzip2])
