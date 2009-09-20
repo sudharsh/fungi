@@ -24,8 +24,12 @@
 #include "main.h"
 
 
-int process_command(char command, FILE *file_ptr, coordinates *ip_ptr)
-{	
+int interpret_funge(coordinates *ip_ptr, char **funge)
+{
+
+    char command = funge[ip_ptr->x][ip_ptr->y];
+    printf("%c", command);
+        
 	switch(command) {
 	   case '>':
            update_ip(ip_ptr, 0, 1);
@@ -39,15 +43,19 @@ int process_command(char command, FILE *file_ptr, coordinates *ip_ptr)
 	   case 'v':
            update_ip(ip_ptr, 1, 0);
            break;
+       case '@': /* End program */
+           exit(1);
+           break;
     }
+    
 }
 
 
-int interpret_source(const char *source)
+int load_source(const char *source)
 {
     coordinates ip; /* Instruction Pointer */
-    static char **funge;
-    
+    char **funge;
+        
     ip.x = 0;
     ip.y = 0;
     
@@ -60,6 +68,10 @@ int interpret_source(const char *source)
 
     /* Get the funge size in first pass and initialise the data structures accordingly */
     funge = get_funge(file_ptr);
+
+    while (TRUE)
+        interpret_funge(&ip, funge);
+    
             
     /* Clean up stuff */        
 	fclose(file_ptr);
@@ -72,6 +84,6 @@ int main(int argc, char **argv)
 {
     /* Use getopts? */
 	if (argc > 1)
-		interpret_source(argv[1]);
+		load_source(argv[1]);
 	return 0;
 }
