@@ -28,7 +28,7 @@ int interpret_funge(coordinates *ip_ptr, char **funge)
 {
 
     char command = funge[ip_ptr->x][ip_ptr->y];
-    printf("%c", command);
+    printf("%c ", command);
         
 	switch(command) {
 	   case '>':

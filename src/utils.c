@@ -66,6 +66,8 @@ char** get_funge(FILE *fptr)
     
     while( (curr_c = getc(fptr)) != EOF) {
         if (curr_c == '\n') {
+            if (curr_width == 0)
+                continue;
             width = curr_width;
             curr_width = 0;
             height++;
@@ -78,7 +80,8 @@ char** get_funge(FILE *fptr)
     funge = (char **) malloc(height * sizeof(char *));
     for(i = 0; i <= height; i++) {
         funge[i] = (char *) malloc (width * sizeof(char *));
-        fgets(funge[i], width, fptr);
+        fgets(funge[i], width + 1, fptr);
+        printf("Line %d: %s", i, funge[i]);
     }
     
     return funge;
