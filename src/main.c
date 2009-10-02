@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <error.h>
-
+#include <ctype.h>
 #include <config.h>
 
 #include "main.h"
@@ -29,6 +29,11 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
 
     char command = funge[ip_ptr->row][ip_ptr->col];
     printf("%c ", command);
+
+    if (command == ' ' || !isascii(command)) {
+        printf( "Whitespace/Non ascii command. Processing last seen valid command %c", ip_ptr->last_command);
+        command = ip_ptr->last_command;
+    }
         
 	switch(command) {
     case '>': /* Move east */
@@ -50,9 +55,9 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
     case '@': /* End program */
         exit(1);
         break;
-    
     }
-    
+    if (command != ' ')
+        ip_ptr->last_command = command;    
 }
 
 

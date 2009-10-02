@@ -31,6 +31,7 @@ typedef struct _InstructionPointer {
     int col;
     int funge_height;
     int funge_width;
+    char last_command;
 } InstructionPointer;
 
 
