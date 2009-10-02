@@ -24,28 +24,33 @@
 #include "main.h"
 
 
-int interpret_funge(coordinates *ip_ptr, char **funge)
+int interpret_funge(InstructionPointer *ip_ptr, char **funge)
 {
 
-    char command = funge[ip_ptr->x][ip_ptr->y];
+    char command = funge[ip_ptr->row][ip_ptr->col];
     printf("%c ", command);
         
 	switch(command) {
-	   case '>':
-           update_ip(ip_ptr, 0, 1);
-           break;
-	   case '<':
-           update_ip(ip_ptr, 0, -1);
-           break;
-	   case '^':
-           update_ip(ip_ptr, -1, 0);
-           break;
-	   case 'v':
-           update_ip(ip_ptr, 1, 0);
-           break;
-       case '@': /* End program */
-           exit(1);
-           break;
+    case '>': /* Move east */
+        update_ip(ip_ptr, 0, 1);
+        break;
+    case '<': /* Move west */
+        update_ip(ip_ptr, 0, -1);
+        break;
+    case '^': /* Move north */
+        update_ip(ip_ptr, -1, 0);
+        break;
+    case 'v': /* Move south */
+        update_ip(ip_ptr, 1, 0);
+        break;
+    case 'r': /* Reflect */
+        ip_ptr->row = (ip_ptr->row) * -1;
+        ip_ptr->col = (ip_ptr->col) * -1;
+        break;
+    case '@': /* End program */
+        exit(1);
+        break;
+    
     }
     
 }
@@ -53,11 +58,11 @@ int interpret_funge(coordinates *ip_ptr, char **funge)
 
 int load_source(const char *source)
 {
-    coordinates ip; /* Instruction Pointer */
+    InstructionPointer ip; /* Instruction Pointer */
     char **funge;
         
-    ip.x = 0;
-    ip.y = 0;
+    ip.row = 0;
+    ip.col = 0;
     
     FILE *file_ptr = fopen(source, "r");
 
@@ -67,7 +72,7 @@ int load_source(const char *source)
 	}
 
     /* Get the funge size in first pass and initialise the data structures accordingly */
-    funge = get_funge(file_ptr);
+    funge = get_funge(file_ptr, &ip);
 
     while (TRUE)
         interpret_funge(&ip, funge);

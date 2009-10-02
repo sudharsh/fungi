@@ -25,18 +25,20 @@
 
 #include <config.h>
 
-/* The (x,y) coordinates on a 2D plane */
-typedef struct _coordinates {
-    int x;
-    int y;
-} coordinates;
+/* The InstructionPointer */
+typedef struct _InstructionPointer {
+    int row;
+    int col;
+    int funge_height;
+    int funge_width;
+} InstructionPointer;
 
 
 /* A helper function */
-void print_current_coordinates(coordinates *ip);
+void print_current_coordinates(InstructionPointer *ip);
 
 /* Update the given instruction pointer given a delta */
-int update_ip(coordinates *ip_ptr, int dx, int dy);
+int update_ip(InstructionPointer *ip_ptr, int dr, int dc);
 
 /* Read the source file and initialise funge space */
-char** get_funge(FILE *fptr);
+char** get_funge(FILE *fptr, InstructionPointer *ip);

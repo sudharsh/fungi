@@ -20,55 +20,88 @@
  */ 
 
 #include "main.h"
+#include <string.h>
 
 /* Just a lazy helper function */
-void print_current_coordinates(coordinates *ip_ptr) {
-    printf("%d %d\n", ip_ptr->x, ip_ptr->y);
+void print_current_coordinates(InstructionPointer *ip_ptr) {
+    printf("%d %d\n", ip_ptr->row, ip_ptr->col);
 }
 
 
-int update_ip(coordinates *ip_ptr, int dx, int dy)
+/* Taken from Linux code */
+static char *strstrip(char *s)
 {
-    printf("Moving by %d, %d\n" , dx, dy);
+        size_t size;
+        char *end;
+
+        size = strlen(s);
+
+        if (!size)
+                return s;
+
+        end = s + size - 1;
+        while (end >= s && isspace(*end))
+                end--;
+        *(end + 1) = '\0';
+
+        while (*s && isspace(*s))
+                s++;
+
+        return s;
+}
+
+
+
+int update_ip(InstructionPointer *ip_ptr, int dr, int dc)
+{
+    printf("Moving by %d, %d\n" , dr, dc);
     print_current_coordinates(ip_ptr);
-    if (ip_ptr->x == MAX_ROW && dx != 0)
-        ip_ptr->x = dx;
+    if (ip_ptr->row == ip_ptr->funge_height && dr != 0)
+        ip_ptr->row = dr;
     else
-        ip_ptr->x += dx;
+        ip_ptr->row += dr;
             
-    if (ip_ptr->y == MAX_COLUMN && dy != 0)
-        ip_ptr->y = dy;
+    if (ip_ptr->col == ip_ptr->funge_width && dc != 0)
+        ip_ptr->col = dc;
     else
-        ip_ptr->y += dy;
+        ip_ptr->col += dc;
 
     // If we have negative value, wrap it
-    if (ip_ptr->x < 0)
-        ip_ptr->x = MAX_ROW - abs(dx);
-    if (ip_ptr->y < 0)
-        ip_ptr->y = MAX_COLUMN - abs(dy);
+    if (ip_ptr->row < 0) {
+        printf("Peeking my head over the other vertical side\n");
+        ip_ptr->row = ip_ptr->funge_height - abs(dr);
+    }
+    if (ip_ptr->col < 0) {
+        printf("Peeking my head over the other side\n");
+        ip_ptr->col = ip_ptr->funge_width - abs(dc);
+    }
            
     print_current_coordinates(ip_ptr);
     return TRUE;
 }
 
 
-char** get_funge(FILE *fptr)
+char** get_funge(FILE *fptr, InstructionPointer *ip_ptr)
 {
     int height = 0;
     int width = 0;
     
     int curr_width = 0; /* Width of the current active line */    
     char curr_c;
-    char **funge = NULL;
+    char **funge;
     char command;
 
     int i;
     
     while( (curr_c = getc(fptr)) != EOF) {
         if (curr_c == '\n') {
-            if (curr_width == 0)
+            printf("%d\n", curr_width);
+            if (curr_width == 0) {
+                printf("Empty new line\n");
                 continue;
-            width = curr_width;
+            }
+            if (width < curr_width)
+                width = curr_width - 1;
             curr_width = 0;
             height++;
         }
@@ -77,11 +110,14 @@ char** get_funge(FILE *fptr)
     rewind(fptr);
 
     printf("height: %d, width %d\n", height, width);
+    ip_ptr->funge_height = height;
+    ip_ptr->funge_width = width;
+    
     funge = (char **) malloc(height * sizeof(char *));
     for(i = 0; i <= height; i++) {
         funge[i] = (char *) malloc (width * sizeof(char *));
-        fgets(funge[i], width + 1, fptr);
-        printf("Line %d: %s", i, funge[i]);
+        fgets(strstrip(funge[i]), width + 2, fptr);
+        printf("Line %d: %s\n", i, strstrip(funge[i]));
     }
     
     return funge;
