@@ -26,15 +26,15 @@
 
 int interpret_funge(InstructionPointer *ip_ptr, char **funge)
 {
-
     char command = funge[ip_ptr->row][ip_ptr->col];
-    printf("%c ", command);
-
-    if (command == ' ' || !isascii(command)) {
-        printf( "Whitespace/Non ascii command. Processing last seen valid command %c", ip_ptr->last_command);
+    
+    if (command == ' ' || !isascii(command) || !command) {
+        printf("Whitespace/Non ascii command. Processing last seen valid command %c\n", ip_ptr->last_command);
         command = ip_ptr->last_command;
     }
-        
+
+    printf("Processing %c\n", command);
+    
 	switch(command) {
     case '>': /* Move east */
         update_ip(ip_ptr, 0, 1);
@@ -57,8 +57,10 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         break;
     }
     if (command != ' ')
-        ip_ptr->last_command = command;    
+        ip_ptr->last_command = command;
+    printf("-----------------\n");
 }
+
 
 
 int load_source(const char *source)

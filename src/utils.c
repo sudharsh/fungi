@@ -44,8 +44,10 @@ static char *strstrip(char *s)
                 end--;
         *(end + 1) = '\0';
 
-        while (*s && isspace(*s))
+        /* Strip only trailing whitespaces
+          while (*s && isspace(*s))
                 s++;
+        */
 
         return s;
 }
@@ -55,20 +57,25 @@ static char *strstrip(char *s)
 int update_ip(InstructionPointer *ip_ptr, int dr, int dc)
 {
     printf("Moving by %d, %d\n" , dr, dc);
-    print_current_coordinates(ip_ptr);
-    if (ip_ptr->row == ip_ptr->funge_height && dr != 0)
-        ip_ptr->row = dr;
+    printf("Before: "); print_current_coordinates(ip_ptr);
+    
+    if ((ip_ptr->row == ip_ptr->funge_height) && dr != 0) {
+        printf("Fixing torus\n");
+        ip_ptr->row = 0;
+    }
     else
         ip_ptr->row += dr;
             
-    if (ip_ptr->col == ip_ptr->funge_width && dc != 0)
-        ip_ptr->col = dc;
+    if ((ip_ptr->col == ip_ptr->funge_width) && dc != 0) {
+        printf("Fixing torus\n");
+        ip_ptr->col = 0;
+    }
     else
         ip_ptr->col += dc;
 
     // If we have negative value, wrap it
     if (ip_ptr->row < 0) {
-        printf("Peeking my head over the other vertical side\n");
+        printf("Peeking my head over the other side\n");
         ip_ptr->row = ip_ptr->funge_height - abs(dr);
     }
     if (ip_ptr->col < 0) {
@@ -76,7 +83,7 @@ int update_ip(InstructionPointer *ip_ptr, int dr, int dc)
         ip_ptr->col = ip_ptr->funge_width - abs(dc);
     }
            
-    print_current_coordinates(ip_ptr);
+    printf("After: "); print_current_coordinates(ip_ptr);
     return TRUE;
 }
 
@@ -95,11 +102,6 @@ char** get_funge(FILE *fptr, InstructionPointer *ip_ptr)
     
     while( (curr_c = getc(fptr)) != EOF) {
         if (curr_c == '\n') {
-            printf("%d\n", curr_width);
-            if (curr_width == 0) {
-                printf("Empty new line\n");
-                continue;
-            }
             if (width < curr_width)
                 width = curr_width - 1;
             curr_width = 0;
