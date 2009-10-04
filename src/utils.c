@@ -19,8 +19,9 @@
  *
  */ 
 
-#include "main.h"
+
 #include <string.h>
+#include "fungi.h"
 
 /* Just a lazy helper function */
 void print_current_coordinates(InstructionPointer *ip_ptr) {
@@ -33,13 +34,12 @@ static char *strstrip(char *s)
 {
         size_t size;
         char *end;
-
         size = strlen(s);
-
+        
         if (!size)
                 return s;
-
         end = s + size - 1;
+        
         while (end >= s && isspace(*end))
                 end--;
         *(end + 1) = '\0';
@@ -94,7 +94,7 @@ char** get_funge(FILE *fptr, InstructionPointer *ip_ptr)
     int width = 0;
     
     int curr_width = 0; /* Width of the current active line */    
-    char curr_c;
+    char curr_c; /* current character */
     char **funge;
     char command;
 
@@ -109,7 +109,7 @@ char** get_funge(FILE *fptr, InstructionPointer *ip_ptr)
         }
         curr_width++;
     }
-    rewind(fptr);
+    rewind(fptr); /* Is there any way to avoid this pass */
 
     printf("height: %d, width %d\n", height, width);
     ip_ptr->funge_height = height;

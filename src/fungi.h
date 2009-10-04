@@ -1,5 +1,5 @@
 /* 
- * utils.h
+ * main.h
  * Written by Sudharshan "Sup3rkiddo" S <sudharsh@gmail.com>
  * All Rights Reserved
  *
@@ -19,11 +19,28 @@
  *
  */ 
 
+//#include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <error.h>
-
+#include <ctype.h>
 #include <config.h>
+
+
+#include "config.h"
+
+
+typedef struct _NumberStack {
+    int value;
+    int index;
+    struct _NumberStack *next;
+} NumberStack;
+
+
+NumberStack *__get_node();
+void stack_push(NumberStack **ns, int nw);
+int stack_pop(NumberStack **ns);
+
 
 /* The InstructionPointer */
 typedef struct _InstructionPointer {
@@ -32,7 +49,9 @@ typedef struct _InstructionPointer {
     int funge_height;
     int funge_width;
     char last_command;
+    NumberStack *stack;    
 } InstructionPointer;
+
 
 
 /* A helper function */

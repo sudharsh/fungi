@@ -15,13 +15,8 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <error.h>
-#include <ctype.h>
-#include <config.h>
 
-#include "main.h"
+#include "fungi.h"
 
 
 int interpret_funge(InstructionPointer *ip_ptr, char **funge)
@@ -29,11 +24,13 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
     char command = funge[ip_ptr->row][ip_ptr->col];
     
     if (command == ' ' || !isascii(command) || !command) {
-        printf("Whitespace/Non ascii command. Processing last seen valid command %c\n", ip_ptr->last_command);
+        printf("Whitespace/Non character command. Processing last seen valid command %c\n", ip_ptr->last_command);
         command = ip_ptr->last_command;
     }
 
     printf("Processing %c\n", command);
+
+ interpret_command:
     
 	switch(command) {
     case '>': /* Move east */
@@ -55,8 +52,17 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
     case '@': /* End program */
         exit(1);
         break;
+    default:
+        if(isdigit(command)) {
+            stack_push(&(ip_ptr)->stack, command);
+            printf("Digit found. Pushing it to the number stack\n");
+            command = ip_ptr->last_command;
+            goto interpret_command; /* Refactor this. This won't work at all, when new commandsets come in */
+        }
+        break;
+            
     }
-    if (command != ' ')
+    if (command != ' ' || !isdigit(command))
         ip_ptr->last_command = command;
     printf("-----------------\n");
 }
@@ -70,6 +76,7 @@ int load_source(const char *source)
         
     ip.row = 0;
     ip.col = 0;
+    ip.stack = __get_node();
     
     FILE *file_ptr = fopen(source, "r");
 
