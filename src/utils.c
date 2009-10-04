@@ -21,13 +21,30 @@
 
 
 #include <string.h>
+#include <stdarg.h>
 #include "fungi.h"
+
+#define DEBUG TRUE
+#undef DEBUG
+
+
+int __debug(const char *message, ...) {
+    #ifdef DEBUG
+    va_list ap;
+    va_start(ap, 0);
+    if (ap)
+        return (vprintf(message, ap));
+    return (printf("%s", message));
+    #endif
+}
+
 
 /* Just a lazy helper function */
 void print_current_coordinates(InstructionPointer *ip_ptr) {
-    printf("%d %d\n", ip_ptr->row, ip_ptr->col);
+    __debug("%d %d\n", ip_ptr->row, ip_ptr->col);
 }
 
+    
 
 /* Taken from Linux code */
 static char *strstrip(char *s)
@@ -56,18 +73,18 @@ static char *strstrip(char *s)
 
 int update_ip_by_offset(InstructionPointer *ip_ptr, int dr, int dc)
 {
-    printf("Moving by %d, %d\n" , dr, dc);
-    printf("Before: "); print_current_coordinates(ip_ptr);
+    __debug("Moving by %d, %d\n" , dr, dc);
+    __debug("Before: "); print_current_coordinates(ip_ptr);
     
     if ((ip_ptr->row == ip_ptr->funge_height) && dr != 0) {
-        printf("Fixing torus\n");
+        __debug("Fixing torus\n");
         ip_ptr->row = 0;
     }
     else
         ip_ptr->row += dr;
             
     if ((ip_ptr->col == ip_ptr->funge_width) && dc != 0) {
-        printf("Fixing torus\n");
+        __debug("Fixing torus\n");
         ip_ptr->col = 0;
     }
     else
@@ -75,15 +92,15 @@ int update_ip_by_offset(InstructionPointer *ip_ptr, int dr, int dc)
 
     // If we have negative value, wrap it
     if (ip_ptr->row < 0) {
-        printf("Peeking my head over the other side\n");
+        __debug("Peeking my head over the other side\n");
         ip_ptr->row = ip_ptr->funge_height - abs(dr);
     }
     if (ip_ptr->col < 0) {
-        printf("Peeking my head over the other side\n");
+        __debug("Peeking my head over the other side\n");
         ip_ptr->col = ip_ptr->funge_width - abs(dc);
     }
            
-    printf("After: "); print_current_coordinates(ip_ptr);
+    __debug("After: "); print_current_coordinates(ip_ptr);
     return TRUE;
 }
 
@@ -134,7 +151,7 @@ char** get_funge(FILE *fptr, InstructionPointer *ip_ptr)
     }
     rewind(fptr); /* Is there any way to avoid this pass */
 
-    printf("height: %d, width %d\n", height, width);
+    __debug("height: %d, width %d\n", height, width);
     ip_ptr->funge_height = height;
     ip_ptr->funge_width = width;
     
@@ -142,9 +159,8 @@ char** get_funge(FILE *fptr, InstructionPointer *ip_ptr)
     for(i = 0; i <= height; i++) {
         funge[i] = (char *) malloc (width * sizeof(char *));
         fgets(strstrip(funge[i]), width + 2, fptr);
-        printf("Line %d: %s\n", i, strstrip(funge[i]));
+        __debug("Line %d: %s\n", i, strstrip(funge[i]));
     }
     
     return funge;
-
 }

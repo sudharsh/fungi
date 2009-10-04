@@ -50,7 +50,7 @@ int stack_pop(NumberStack **ns) {
     NumberStack *dummy;
     
     if((*ns)->index == -1) {
-        printf("Stack is empty");
+        __debug("Stack is empty");
         return (*ns)->value;
         
     } else {                 
@@ -70,11 +70,11 @@ int test_stack() {
     NumberStack *ns = __get_node();
     stack_push(&ns, 5);
     stack_push(&ns, 4);
-    printf("Popped : %d\n", stack_pop(&ns));
-    printf("Popped : %d\n", stack_pop(&ns));
-    printf("Popped : %d\n", stack_pop(&ns));
-    printf("Popped : %d\n", stack_pop(&ns));
+    __debug("Popped : %d\n", stack_pop(&ns));
+    __debug("Popped : %d\n", stack_pop(&ns));
+    __debug("Popped : %d\n", stack_pop(&ns));
+    __debug("Popped : %d\n", stack_pop(&ns));
     stack_push(&ns, 6);
-    printf("Popped : %d\n", stack_pop(&ns));
+    __debug("Popped : %d\n", stack_pop(&ns));
 }
     

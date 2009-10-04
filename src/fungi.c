@@ -22,13 +22,15 @@
 int interpret_funge(InstructionPointer *ip_ptr, char **funge)
 {
     char command = tolower(funge[ip_ptr->row][ip_ptr->col]);
+
+    int a, b; /* For mathematical operations */
     
     if (command == ' ' || !isascii(command) || !command) {
-        printf("Whitespace/Non character command. Processing last seen valid command %c\n", ip_ptr->last_command);
+        __debug("Whitespace/Non character command. Processing last seen valid command %c\n", ip_ptr->last_command);
         command = ip_ptr->last_command;
     }
 
-    printf("Processing %c\n", command);
+    __debug("Processing %c\n", command);
 
 	switch(command) {
     case '>': /* Move east */
@@ -47,23 +49,57 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         ip_ptr->row = (ip_ptr->row) * -1;
         ip_ptr->col = (ip_ptr->col) * -1;
         break;
+
+    case '.':
+        printf("%d", stack_pop(&(ip_ptr)->stack));
+        move_ip(ip_ptr, ip_ptr->direction);
+        break;
+        
     case '@': /* End program */
         return FALSE;
     default:
         /* command is *either* a digit or is in abcde.. or in other words a valid hex */
-        if(isdigit(command) ^ (command >= 0x61 && command <= 0x66) ) {
+        if(isdigit(command) || (command >= 0x61 && command <= 0x66) ) {
             if (command >= 0x61 && command <= 0x66)
                 command = 10 + (command - 'a'); /* Convert hex to decimal */
-            stack_push(&(ip_ptr)->stack, command);
-            printf("Digit found. Pushing %d to the number stack\n", command);
-            move_ip(ip_ptr, ip_ptr->direction);
+            stack_push(&(ip_ptr)->stack, command - 48); /* convert ascii -> decimal and push it to the stack */
+            __debug("Digit found. Pushing %d to the number stack\n", command - 48);
         }
+        else {
+            if (command == '/' || command ==  '*' || \
+                command == '+' || command == '-' ||  \
+                command == '%') {
+                a = stack_pop(&(ip_ptr)->stack);
+                b = stack_pop(&(ip_ptr)->stack);
+                __debug("Popped %d and %d\n", a, b);
+
+                /* Push the results back to the stack */
+                switch(command) {
+                case '/':
+                    stack_push(&(ip_ptr)->stack, b/a);
+                    break;
+                case '*':
+                    stack_push(&(ip_ptr)->stack, b*a);
+                    break;
+                case '+':
+                    stack_push(&(ip_ptr)->stack, a+b);
+                    break;
+                case '_':
+                    stack_push(&(ip_ptr)->stack, b-a);
+                    break;
+                case '%':
+                    stack_push(&(ip_ptr)->stack, b%a);
+                    break;
+                }
+            }
+        }
+        move_ip(ip_ptr, ip_ptr->direction);
         break;
             
     }
     if (command != ' ' || !isdigit(command))
         ip_ptr->last_command = command;
-    printf("-----------------\n");
+    __debug("-----------------\n");
     return TRUE;
 }
 
