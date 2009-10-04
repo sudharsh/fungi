@@ -33,13 +33,20 @@ NumberStack *__get_node()
 void stack_push(NumberStack **ns, int nw)
 {
     NumberStack *node = __get_node();
+    int prev_idx = 0;
+
     
+    if (*ns)
+        prev_idx = (*ns)->index;
+    else
+        prev_idx = -1;
     node->value = nw;                          
     node->next = NULL;
         
     node->next = *ns;
     *ns = node;
-    (*ns)->index = node->index + 1;
+    (*ns)->index = prev_idx + 1;
+    __debug("Pushed %d. Size is now", nw, (*ns)->index + 1);
     return;
 }
 
@@ -48,18 +55,21 @@ void stack_push(NumberStack **ns, int nw)
 int stack_pop(NumberStack **ns) {
     int value;
     NumberStack *dummy;
-    
-    if((*ns)->index == -1) {
-        __debug("Stack is empty");
-        return (*ns)->value;
+
+    if(*ns)
+        if((*ns)->index < 0) {
+            __debug("Stack is empty\n");
+            return;
         
-    } else {                 
-        value = (*ns)->value;
-        dummy = *ns;
-        *ns = (*ns)->next;
-        (*ns)->index = dummy->index - 1;
-        free(dummy);
-    }
+        } else {                 
+            value = (*ns)->value;
+            dummy = *ns;
+            *ns = (*ns)->next;
+            if (*ns) {
+                (*ns)->index = dummy->index - 1;
+                free(dummy);
+            }
+        }
     
     return value;
 }
