@@ -37,9 +37,13 @@ typedef struct _NumberStack {
 } NumberStack;
 
 
-NumberStack *__get_node();
-void stack_push(NumberStack **ns, int nw);
-int stack_pop(NumberStack **ns);
+enum ip_direction {
+    MOVE_WEST,
+    MOVE_EAST,
+    MOVE_NORTH,
+    MOVE_SOUTH,
+    FLY
+};
 
 
 /* The InstructionPointer */
@@ -49,16 +53,26 @@ typedef struct _InstructionPointer {
     int funge_height;
     int funge_width;
     char last_command;
+    enum ip_direction direction;
     NumberStack *stack;    
 } InstructionPointer;
 
 
 
+/* Create a node (or) a new stack */
+NumberStack *__get_node();
+
+void stack_push(NumberStack **ns, int nw);
+
+int stack_pop(NumberStack **ns);
+
 /* A helper function */
 void print_current_coordinates(InstructionPointer *ip);
 
 /* Update the given instruction pointer given a delta */
-int update_ip(InstructionPointer *ip_ptr, int dr, int dc);
+int update_ip_by_offset(InstructionPointer *ip_ptr, int dr, int dc);
 
 /* Read the source file and initialise funge space */
 char** get_funge(FILE *fptr, InstructionPointer *ip);
+
+

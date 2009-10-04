@@ -54,7 +54,7 @@ static char *strstrip(char *s)
 
 
 
-int update_ip(InstructionPointer *ip_ptr, int dr, int dc)
+int update_ip_by_offset(InstructionPointer *ip_ptr, int dr, int dc)
 {
     printf("Moving by %d, %d\n" , dr, dc);
     printf("Before: "); print_current_coordinates(ip_ptr);
@@ -86,6 +86,27 @@ int update_ip(InstructionPointer *ip_ptr, int dr, int dc)
     printf("After: "); print_current_coordinates(ip_ptr);
     return TRUE;
 }
+
+
+
+void move_ip(InstructionPointer *ip_ptr, int direction)
+{
+    switch(direction) {
+    case MOVE_WEST:
+        update_ip_by_offset(ip_ptr, 0, -1);
+        break;
+    case MOVE_EAST:
+        update_ip_by_offset(ip_ptr, 0, 1);
+        break;
+    case MOVE_NORTH:
+        update_ip_by_offset(ip_ptr, -1, 0);
+        break;
+    case MOVE_SOUTH:
+        update_ip_by_offset(ip_ptr, 1, 0);
+        break;
+    }
+}
+
 
 
 char** get_funge(FILE *fptr, InstructionPointer *ip_ptr)

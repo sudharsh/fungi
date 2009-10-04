@@ -30,34 +30,35 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
 
     printf("Processing %c\n", command);
 
- interpret_command:
-    
 	switch(command) {
     case '>': /* Move east */
-        update_ip(ip_ptr, 0, 1);
+        move_ip(ip_ptr, MOVE_EAST);
+        ip_ptr->direction = MOVE_EAST;
         break;
     case '<': /* Move west */
-        update_ip(ip_ptr, 0, -1);
+        move_ip(ip_ptr, MOVE_WEST);
+        ip_ptr->direction = MOVE_WEST;
         break;
     case '^': /* Move north */
-        update_ip(ip_ptr, -1, 0);
+        move_ip(ip_ptr, MOVE_NORTH);
+        ip_ptr->direction = MOVE_NORTH;
         break;
     case 'v': /* Move south */
-        update_ip(ip_ptr, 1, 0);
+        move_ip(ip_ptr, MOVE_SOUTH);
+        ip_ptr->direction = MOVE_SOUTH;
         break;
     case 'r': /* Reflect */
         ip_ptr->row = (ip_ptr->row) * -1;
         ip_ptr->col = (ip_ptr->col) * -1;
         break;
     case '@': /* End program */
-        exit(1);
+        exit(EXIT_SUCCESS);
         break;
     default:
-        if(isdigit(command)) {
+        if(isascii(command)) {
             stack_push(&(ip_ptr)->stack, command);
             printf("Digit found. Pushing it to the number stack\n");
-            command = ip_ptr->last_command;
-            goto interpret_command; /* Refactor this. This won't work at all, when new commandsets come in */
+            move_ip(ip_ptr, ip_ptr->direction);
         }
         break;
             
@@ -76,6 +77,7 @@ int load_source(const char *source)
         
     ip.row = 0;
     ip.col = 0;
+    ip.direction = MOVE_EAST;
     ip.stack = __get_node();
     
     FILE *file_ptr = fopen(source, "r");
