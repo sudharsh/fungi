@@ -54,6 +54,11 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         printf("%d", stack_pop(&(ip_ptr)->stack));
         move_ip(ip_ptr, ip_ptr->direction);
         break;
+
+    case ',':
+        printf("%c", stack_pop(&(ip_ptr)->stack));
+        move_ip(ip_ptr, ip_ptr->direction);
+        break;
         
     case '@': /* End program */
         return FALSE;
