@@ -21,7 +21,7 @@
 
 int interpret_funge(InstructionPointer *ip_ptr, char **funge)
 {
-    char command = funge[ip_ptr->row][ip_ptr->col];
+    char command = tolower(funge[ip_ptr->row][ip_ptr->col]);
     
     if (command == ' ' || !isascii(command) || !command) {
         printf("Whitespace/Non character command. Processing last seen valid command %c\n", ip_ptr->last_command);
@@ -33,31 +33,29 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
 	switch(command) {
     case '>': /* Move east */
         move_ip(ip_ptr, MOVE_EAST);
-        ip_ptr->direction = MOVE_EAST;
         break;
     case '<': /* Move west */
         move_ip(ip_ptr, MOVE_WEST);
-        ip_ptr->direction = MOVE_WEST;
         break;
     case '^': /* Move north */
         move_ip(ip_ptr, MOVE_NORTH);
-        ip_ptr->direction = MOVE_NORTH;
         break;
     case 'v': /* Move south */
         move_ip(ip_ptr, MOVE_SOUTH);
-        ip_ptr->direction = MOVE_SOUTH;
         break;
     case 'r': /* Reflect */
         ip_ptr->row = (ip_ptr->row) * -1;
         ip_ptr->col = (ip_ptr->col) * -1;
         break;
     case '@': /* End program */
-        exit(EXIT_SUCCESS);
-        break;
+        return FALSE;
     default:
-        if(isascii(command)) {
+        /* command is *either* a digit or is in abcde.. or in other words a valid hex */
+        if(isdigit(command) ^ (command >= 0x61 && command <= 0x66) ) {
+            if (command >= 0x61 && command <= 0x66)
+                command = 10 + (command - 'a'); /* Convert hex to decimal */
             stack_push(&(ip_ptr)->stack, command);
-            printf("Digit found. Pushing it to the number stack\n");
+            printf("Digit found. Pushing %d to the number stack\n", command);
             move_ip(ip_ptr, ip_ptr->direction);
         }
         break;
@@ -66,6 +64,7 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
     if (command != ' ' || !isdigit(command))
         ip_ptr->last_command = command;
     printf("-----------------\n");
+    return TRUE;
 }
 
 
@@ -90,8 +89,8 @@ int load_source(const char *source)
     /* Get the funge size in first pass and initialise the data structures accordingly */
     funge = get_funge(file_ptr, &ip);
 
-    while (TRUE)
-        interpret_funge(&ip, funge);
+    while (interpret_funge(&ip, funge))
+        ;
     
             
     /* Clean up stuff */        

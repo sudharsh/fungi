@@ -105,6 +105,8 @@ void move_ip(InstructionPointer *ip_ptr, int direction)
         update_ip_by_offset(ip_ptr, 1, 0);
         break;
     }
+    ip_ptr->direction = direction;
+
 }
 
 
