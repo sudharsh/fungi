@@ -29,6 +29,6 @@ int __debug(const char *message, ...) {
     va_start(ap, 0);
     if (ap)
         return (vprintf(message, ap));
-    return (printf("%s", message));
+    return (printf("%s\n", message));
     #endif
 }

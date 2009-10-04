@@ -74,5 +74,4 @@ void move_ip(InstructionPointer *ip_ptr, int direction)
         break;
     }
     ip_ptr->direction = direction;
-
 }

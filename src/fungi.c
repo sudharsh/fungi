@@ -24,6 +24,7 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
     char command = tolower(funge[ip_ptr->row][ip_ptr->col]);
 
     int a, b; /* For mathematical operations */
+    char c; /* when we enter string mode */
     
     if (command == ' ' || !isascii(command) || !command) {
         __debug("Whitespace/Non character command. Processing last seen valid command %c\n", ip_ptr->last_command);
@@ -62,6 +63,21 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         
     case '@': /* End program */
         return FALSE;
+
+    case '"':
+        __debug("Entering string mode");
+
+        /* Keep moving pushing the character to the stack till we reach the other end */
+        move_ip(ip_ptr, ip_ptr->direction);
+        while((c = funge[ip_ptr->row][ip_ptr->col]) != '"')
+        {
+            stack_push(&(ip_ptr)->stack, c);
+            move_ip(ip_ptr, ip_ptr->direction);
+        }
+        move_ip(ip_ptr, ip_ptr->direction);
+        break;
+            
+        
     default:
         /* command is *either* a digit or is in abcde.. or in other words a valid hex */
         if(isdigit(command) || (command >= 0x61 && command <= 0x66) ) {
