@@ -70,10 +70,10 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         /* Keep moving pushing the character to the stack till we reach the other end */
         move_ip(ip_ptr, ip_ptr->direction);
         while((c = funge[ip_ptr->row][ip_ptr->col]) != '"')
-        {
-            stack_push(&(ip_ptr)->stack, c);
-            move_ip(ip_ptr, ip_ptr->direction);
-        }
+            {
+                stack_push(&(ip_ptr)->stack, c);
+                move_ip(ip_ptr, ip_ptr->direction);
+            }
         move_ip(ip_ptr, ip_ptr->direction);
         break;
             
@@ -148,8 +148,7 @@ int load_source(const char *source)
 
     while (interpret_funge(&ip, funge))
         ;
-    
-            
+                
     /* Clean up stuff */        
 	fclose(file_ptr);
     free(funge);

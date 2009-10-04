@@ -22,17 +22,17 @@
 #include "fungi.h"
 
 
-NumberStack *__get_node()
+FStack *__get_node()
 {
-    NumberStack *node;
-    node = (NumberStack *) malloc(sizeof(NumberStack));
+    FStack *node;
+    node = (FStack *) malloc(sizeof(FStack));
     return node;
 }
 
 
-void stack_push(NumberStack **ns, int nw)
+void stack_push(FStack **ns, int nw)
 {
-    NumberStack *node = __get_node();
+    FStack *node = __get_node();
     int prev_idx = 0;
 
     
@@ -52,9 +52,9 @@ void stack_push(NumberStack **ns, int nw)
 
 
 
-int stack_pop(NumberStack **ns) {
+int stack_pop(FStack **ns) {
     int value;
-    NumberStack *dummy;
+    FStack *dummy;
 
     if(*ns)
         if((*ns)->index < 0) {
@@ -77,7 +77,7 @@ int stack_pop(NumberStack **ns) {
     
     
 int test_stack() {
-    NumberStack *ns = __get_node();
+    FStack *ns = __get_node();
     stack_push(&ns, 5);
     stack_push(&ns, 4);
     __debug("Popped : %d\n", stack_pop(&ns));

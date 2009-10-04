@@ -30,11 +30,11 @@
 #define DEBUG TRUE
 //#undef DEBUG
 
-typedef struct _NumberStack {
+typedef struct _FStack {
     int value;
     int index;
-    struct _NumberStack *next;
-} NumberStack;
+    struct _FStack *next;
+} FStack;
 
 enum ip_direction {
     MOVE_WEST,
@@ -52,18 +52,18 @@ typedef struct _InstructionPointer {
     int funge_width;
     char last_command;
     enum ip_direction direction;
-    NumberStack *stack;    
+    FStack *stack;    
 } InstructionPointer;
 
 
 int __debug(const char *message, ...);
 
 /* Create a node (or) a new stack */
-NumberStack *__get_node();
+FStack *__get_node();
 
-void stack_push(NumberStack **ns, int nw);
+void stack_push(FStack **ns, int nw);
 
-int stack_pop(NumberStack **ns);
+int stack_pop(FStack **ns);
 
 /* A helper function */
 void print_current_coordinates(InstructionPointer *ip);
