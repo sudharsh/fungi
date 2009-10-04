@@ -25,17 +25,16 @@
 #include <error.h>
 #include <ctype.h>
 #include <config.h>
+#include <stdarg.h>
 
-
-#include "config.h"
-
+#define DEBUG TRUE
+#undef DEBUG
 
 typedef struct _NumberStack {
     int value;
     int index;
     struct _NumberStack *next;
 } NumberStack;
-
 
 enum ip_direction {
     MOVE_WEST,
@@ -44,7 +43,6 @@ enum ip_direction {
     MOVE_SOUTH,
     FLY
 };
-
 
 /* The InstructionPointer */
 typedef struct _InstructionPointer {
@@ -58,6 +56,7 @@ typedef struct _InstructionPointer {
 } InstructionPointer;
 
 
+int __debug(const char *message, ...);
 
 /* Create a node (or) a new stack */
 NumberStack *__get_node();
