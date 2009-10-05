@@ -34,7 +34,7 @@ void stack_push(FStack **ns, int nw)
 {
     FStack *node = __get_node();
     int prev_idx = 0;
-
+    
     
     if (*ns)
         prev_idx = (*ns)->index;
@@ -46,7 +46,7 @@ void stack_push(FStack **ns, int nw)
     node->next = *ns;
     *ns = node;
     (*ns)->index = prev_idx + 1;
-    __debug("Pushed %d. Size is now", nw, (*ns)->index + 1);
+    __debug("Pushed %d. Size is now %d\n", nw, (*ns)->index + 1);
     return;
 }
 
