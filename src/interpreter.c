@@ -20,15 +20,19 @@
 
 int interpret_funge(InstructionPointer *ip_ptr, char **funge)
 {
-    char command = tolower(funge[ip_ptr->row][ip_ptr->col]);
+    char instruction = tolower(funge[ip_ptr->row][ip_ptr->col]);
 
     int a, b; /* For mathematical operations */
     int popped;
     char c; /* when we enter string mode */
     
-    __debug("Processing %c\n", command);
+    __debug("Processing %c\n", instruction);
 
-    switch(command) {
+    switch(instruction) {
+
+    /* 
+      Direction instructions
+    */
     case '>': /* Move east */
         move_ip(ip_ptr, MOVE_EAST);
         break;
@@ -46,25 +50,43 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         ip_ptr->col = (ip_ptr->col) * -1;
         break;
 
+    /*
+      Instructions to print stuff on screen
+    */
     case '.': /* Print integer */
 	printf("%d", stack_pop(&(ip_ptr)->stack));
         move_ip(ip_ptr, ip_ptr->direction);
         break;
-
     case ',': /* Print ASCII */
         printf("%c", stack_pop(&(ip_ptr)->stack));
         move_ip(ip_ptr, ip_ptr->direction);
         break;
 
+    /*
+      Stack Manipulation
+    */
     case ':': /* Duplicate top value in the stack. Pop once and push twice */
         popped = stack_pop(&(ip_ptr)->stack);
 	stack_push(&(ip_ptr)->stack, popped);
 	stack_push(&(ip_ptr)->stack, popped);
 	break;	    
-        
+    case '$': /* Pop and discard */
+	stack_pop(&(ip_ptr)->stack);
+        break;
+    case '\\': /* Swap the top 2 elements */
+        a = stack_pop(&(ip_ptr)->stack);
+        b = stack_pop(&(ip_ptr)->stack);
+        stack_push(&(ip_ptr)->stack, b);   
+	stack_push(&(ip_ptr)->stack, a);
+        break;
+
+    
     case '@': /* End program */
         return FALSE;
 
+    /*
+      String Mode
+    */
     case '"':
         __debug("Entering string mode\n");
 
@@ -72,30 +94,30 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         while((move_ip(ip_ptr, ip_ptr->direction)) && (c = funge[ip_ptr->row][ip_ptr->col]) != '"')
             stack_push(&(ip_ptr)->stack, c);
 
-	__debug("Leaving string mode %c\n", command);
+	__debug("Leaving string mode %c\n", instruction);
         move_ip(ip_ptr, ip_ptr->direction);
 	
         break;
             
         
     default:
-        /* command is *either* a digit or is in abcde.. or in other words a valid hex */
-        if(isdigit(command) || (command >= 0x61 && command <= 0x66) ) {
-            if (command >= 0x61 && command <= 0x66)
-                command = 10 + (command - 'a'); /* Convert hex to decimal */
-            stack_push(&(ip_ptr)->stack, command - 48); /* convert ascii -> decimal and push it to the stack */
-            __debug("Digit found. Pushing %d to the number stack\n", command - 48);
+        /* instruction is *either* a digit or is in abcde.. or in other words a valid hex */
+        if(isdigit(instruction) || (instruction >= 0x61 && instruction <= 0x66) ) {
+            if (instruction >= 0x61 && instruction <= 0x66)
+                instruction = 10 + (instruction - 'a'); /* Convert hex to decimal */
+            stack_push(&(ip_ptr)->stack, instruction - 48); /* convert ascii -> decimal and push it to the stack */
+            __debug("Digit found. Pushing %d to the number stack\n", instruction - 48);
         }
         else {
-            if (command == '/' || command ==  '*' || \
-                command == '+' || command == '-' ||  \
-                command == '%') {
+            if (instruction == '/' || instruction ==  '*' || \
+                instruction == '+' || instruction == '-' ||  \
+                instruction == '%') {
                 a = stack_pop(&(ip_ptr)->stack);
                 b = stack_pop(&(ip_ptr)->stack);
                 __debug("Popped %d and %d\n", a, b);
 
                 /* Push the results back to the stack */
-                switch(command) {
+                switch(instruction) {
                 case '/':
                     stack_push(&(ip_ptr)->stack, b/a);
                     break;
@@ -120,8 +142,8 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         break;
             
     }
-    if (command != ' ' || !isdigit(command))
-        ip_ptr->last_command = command;
+    if (instruction != ' ' || !isdigit(instruction))
+        ip_ptr->last_instruction = instruction;
     __debug("-----------------\n");
     return TRUE;
 }
