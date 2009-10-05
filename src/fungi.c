@@ -24,6 +24,7 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
     char command = tolower(funge[ip_ptr->row][ip_ptr->col]);
 
     int a, b; /* For mathematical operations */
+    int popped;
     char c; /* when we enter string mode */
     
     __debug("Processing %c\n", command);
@@ -46,15 +47,21 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         ip_ptr->col = (ip_ptr->col) * -1;
         break;
 
-    case '.':
+    case '.': /* Print integer */
 	printf("%d", stack_pop(&(ip_ptr)->stack));
         move_ip(ip_ptr, ip_ptr->direction);
         break;
 
-    case ',':
+    case ',': /* Print ASCII */
         printf("%c", stack_pop(&(ip_ptr)->stack));
         move_ip(ip_ptr, ip_ptr->direction);
         break;
+
+    case ':': /* Duplicate top value in the stack. Pop once and push twice */
+        popped = stack_pop(&(ip_ptr)->stack);
+	stack_push(&(ip_ptr)->stack, popped);
+	stack_push(&(ip_ptr)->stack, popped);
+	break;	    
         
     case '@': /* End program */
         return FALSE;
