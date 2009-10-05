@@ -131,17 +131,18 @@ int load_source(const char *source)
     InstructionPointer ip; /* Instruction Pointer */
     char **funge;
         
+    
+    FILE *file_ptr = fopen(source, "r");
+
+    if (!file_ptr) {
+	    fprintf(stderr, "Error: No such file %s\n", source);
+	    return FALSE;
+    }
+
     ip.row = 0;
     ip.col = 0;
     ip.direction = MOVE_EAST;
     ip.stack = __get_node();
-    
-    FILE *file_ptr = fopen(source, "r");
-
-	if (!file_ptr) {
-		fprintf(stderr, "Error: No such file %s\n", source);
-		return FALSE;
-	}
 
     /* Get the funge size in first pass and initialise the data structures accordingly */
     funge = get_funge(file_ptr, &ip);
