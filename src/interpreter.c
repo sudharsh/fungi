@@ -68,14 +68,10 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
     case '"':
         __debug("Entering string mode\n");
 
-        /* Keep moving pushing the character to the stack till we reach the matching '"' at the other end */
+        /* Keep moving and pushing the character to the stack till we reach the matching '"' at the other end */
         while((move_ip(ip_ptr, ip_ptr->direction)) && (c = funge[ip_ptr->row][ip_ptr->col]) != '"')
-	{
-	    if (c == '"')
-	        break;
             stack_push(&(ip_ptr)->stack, c);
-                
-	}
+
 	__debug("Leaving string mode %c\n", command);
         move_ip(ip_ptr, ip_ptr->direction);
 	
