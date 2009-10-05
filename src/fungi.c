@@ -26,14 +26,9 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
     int a, b; /* For mathematical operations */
     char c; /* when we enter string mode */
     
-    if (command == ' ' || !isascii(command) || !command) {
-        __debug("Whitespace/Non character command. Processing last seen valid command %c\n", ip_ptr->last_command);
-        command = ip_ptr->last_command;
-    }
-
     __debug("Processing %c\n", command);
 
-	switch(command) {
+    switch(command) {
     case '>': /* Move east */
         move_ip(ip_ptr, MOVE_EAST);
         break;
@@ -52,7 +47,7 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         break;
 
     case '.':
-        printf("%d", stack_pop(&(ip_ptr)->stack));
+	printf("%d", stack_pop(&(ip_ptr)->stack));
         move_ip(ip_ptr, ip_ptr->direction);
         break;
 
@@ -65,16 +60,19 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         return FALSE;
 
     case '"':
-        __debug("Entering string mode");
+        __debug("Entering string mode\n");
 
-        /* Keep moving pushing the character to the stack till we reach the other end */
+        /* Keep moving pushing the character to the stack till we reach the matching '"' at the other end */
+        while((move_ip(ip_ptr, ip_ptr->direction)) && (c = funge[ip_ptr->row][ip_ptr->col]) != '"')
+	{
+	    if (c == '"')
+	        break;
+            stack_push(&(ip_ptr)->stack, c);
+                
+	}
+	__debug("Leaving string mode %c\n", command);
         move_ip(ip_ptr, ip_ptr->direction);
-        while((c = funge[ip_ptr->row][ip_ptr->col]) != '"')
-            {
-                stack_push(&(ip_ptr)->stack, c);
-                move_ip(ip_ptr, ip_ptr->direction);
-            }
-        move_ip(ip_ptr, ip_ptr->direction);
+	
         break;
             
         
@@ -114,6 +112,8 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
                 }
             }
         }
+
+	/* Move along the same direction */
         move_ip(ip_ptr, ip_ptr->direction);
         break;
             
