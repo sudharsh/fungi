@@ -28,7 +28,7 @@
 #include <stdarg.h>
 
 #define DEBUG TRUE
-//#undef DEBUG
+#undef DEBUG
 
 typedef struct _FStack {
     int value;
@@ -50,7 +50,7 @@ typedef struct _InstructionPointer {
     int col;
     int funge_height;
     int funge_width;
-    char last_command;
+    char last_instruction;
     enum ip_direction direction;
     FStack *stack;    
 } InstructionPointer;
