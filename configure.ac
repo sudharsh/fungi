@@ -18,5 +18,4 @@ AC_DEFINE_UNQUOTED(TRUE, (!FALSE), [Boolean True])
 AC_OUTPUT([
 Makefile
 src/Makefile
-include/Makefile
 ])
