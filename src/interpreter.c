@@ -148,9 +148,14 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
             stack_push(&(ip_ptr)->stack, 0);
         break;
         
-        
+
+    /*
+      fungi process controller
+    */
     case '@': /* End program */
         return FALSE;
+    case 'q':
+        exit(stack_pop(&(ip_ptr)->stack));
 
     /*
       String Mode
