@@ -27,6 +27,7 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
     int input;
     int move_along = TRUE;
     int invert_direction = FALSE;
+    int iter;
     char c; /* when we enter string mode */
     
     __debug("Processing %c\n", instruction);
@@ -56,8 +57,18 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
     case '#': /* Trampoline. Skip the next cell */
         move_ip(ip_ptr, ip_ptr->direction);
         break;
-        
+    case 'j':
+        popped = stack_pop(&(ip_ptr)->stack);
+        if (popped < 0) /* If negative value, then reverse direction of jump */
+            ip_ptr->direction = ip_ptr->direction * -1;
+        popped = abs(popped);
+        for (iter = 0; iter < popped; popped++)
+            move_ip(ip_ptr, ip_ptr->direction);
+        /* Restore the opposite direction */
+        ip_ptr->direction = ip_ptr->direction * -1;
+        break;
 
+        
     /*
       Instructions to print stuff on screen
     */
