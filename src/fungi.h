@@ -65,6 +65,8 @@ void stack_push(FStack **ns, int nw);
 
 int stack_pop(FStack **ns);
 
+int interpret_funge(InstructionPointer *ip_ptr, char **funge);
+
 /* A helper function */
 void print_current_coordinates(InstructionPointer *ip);
 

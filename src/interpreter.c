@@ -24,9 +24,12 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
 
     int a, b; /* For mathematical operations */
     int popped;
+    int input;
+    int move_along = TRUE;
     char c; /* when we enter string mode */
     
     __debug("Processing %c\n", instruction);
+    
 
     switch(instruction) {
 
@@ -34,16 +37,16 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
       Direction instructions
     */
     case '>': /* Move east */
-        move_ip(ip_ptr, MOVE_EAST);
+        ip_ptr->direction = MOVE_EAST;
         break;
     case '<': /* Move west */
-        move_ip(ip_ptr, MOVE_WEST);
+        ip_ptr->direction = MOVE_WEST;
         break;
     case '^': /* Move north */
-        move_ip(ip_ptr, MOVE_NORTH);
+        ip_ptr->direction = MOVE_NORTH;
         break;
     case 'v': /* Move south */
-        move_ip(ip_ptr, MOVE_SOUTH);
+        ip_ptr->direction = MOVE_SOUTH;
         break;
     case 'r': /* Reflect */
         ip_ptr->row = (ip_ptr->row) * -1;
@@ -54,32 +57,44 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
       Instructions to print stuff on screen
     */
     case '.': /* Print integer */
-	printf("%d", stack_pop(&(ip_ptr)->stack));
-        move_ip(ip_ptr, ip_ptr->direction);
+        printf("%d", stack_pop(&(ip_ptr)->stack));
         break;
     case ',': /* Print ASCII */
         printf("%c", stack_pop(&(ip_ptr)->stack));
-        move_ip(ip_ptr, ip_ptr->direction);
         break;
 
+    /*
+      Input instructions
+    */
+    case '&':
+        scanf("%d", &input);
+        stack_push(&(ip_ptr)->stack, input);
+        break;
+    case '~':
+        scanf("%c", &input);
+        stack_push(&(ip_ptr)->stack, input);
+        break;
+                
+
+        
     /*
       Stack Manipulation
     */
     case ':': /* Duplicate top value in the stack. Pop once and push twice */
         popped = stack_pop(&(ip_ptr)->stack);
-	stack_push(&(ip_ptr)->stack, popped);
-	stack_push(&(ip_ptr)->stack, popped);
-	break;	    
+        stack_push(&(ip_ptr)->stack, popped);
+        stack_push(&(ip_ptr)->stack, popped);
+        break;	    
     case '$': /* Pop and discard */
-	stack_pop(&(ip_ptr)->stack);
+        stack_pop(&(ip_ptr)->stack);
         break;
     case '\\': /* Swap the top 2 elements */
         a = stack_pop(&(ip_ptr)->stack);
         b = stack_pop(&(ip_ptr)->stack);
         stack_push(&(ip_ptr)->stack, b);   
-	stack_push(&(ip_ptr)->stack, a);
+        stack_push(&(ip_ptr)->stack, a);
         break;
-
+    
     
     case '@': /* End program */
         return FALSE;
@@ -94,9 +109,7 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         while((move_ip(ip_ptr, ip_ptr->direction)) && (c = funge[ip_ptr->row][ip_ptr->col]) != '"')
             stack_push(&(ip_ptr)->stack, c);
 
-	__debug("Leaving string mode %c\n", instruction);
-        move_ip(ip_ptr, ip_ptr->direction);
-	
+        __debug("Leaving string mode %c\n", instruction);
         break;
             
         
@@ -137,11 +150,13 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
             }
         }
 
-	/* Move along the same direction */
-        move_ip(ip_ptr, ip_ptr->direction);
         break;
             
     }
+    /* Move along the same direction */
+    if (move_along)
+        move_ip(ip_ptr, ip_ptr->direction);
+
     if (instruction != ' ' || !isdigit(instruction))
         ip_ptr->last_instruction = instruction;
     __debug("-----------------\n");
