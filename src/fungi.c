@@ -19,7 +19,6 @@
 #include "fungi.h"
 
 
-
 int load_source(const char *source)
 {
     InstructionPointer ip; /* Instruction Pointer */
