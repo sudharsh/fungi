@@ -37,11 +37,11 @@ typedef struct _FStack {
 } FStack;
 
 enum ip_direction {
-    MOVE_WEST,
-    MOVE_EAST,
-    MOVE_NORTH,
-    MOVE_SOUTH,
-    FLY
+    MOVE_WEST = 1,
+    MOVE_EAST = -1,
+    MOVE_NORTH = 2,
+    MOVE_SOUTH = -2,
+    FLY = 3
 };
 
 /* The InstructionPointer */
