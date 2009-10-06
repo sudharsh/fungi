@@ -26,6 +26,7 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
     int popped;
     int input;
     int move_along = TRUE;
+    int invert_direction = FALSE;
     char c; /* when we enter string mode */
     
     __debug("Processing %c\n", instruction);
@@ -75,8 +76,6 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         stack_push(&(ip_ptr)->stack, input);
         break;
                 
-
-        
     /*
       Stack Manipulation
     */
@@ -94,8 +93,47 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         stack_push(&(ip_ptr)->stack, b);   
         stack_push(&(ip_ptr)->stack, a);
         break;
-    
-    
+
+    /*
+      Conditional Instructions
+    */
+    case '_': /* Horizontal If-else */
+        popped = stack_pop(&(ip_ptr)->stack);
+        if (popped)
+            ip_ptr->direction = MOVE_WEST;
+        else
+            ip_ptr->direction = MOVE_EAST;
+        break;
+    case '|':
+        popped = stack_pop(&(ip_ptr)->stack);
+        if (popped)
+            ip_ptr->direction = MOVE_NORTH;
+        else
+            ip_ptr->direction = MOVE_SOUTH;
+        break;
+        
+
+    /*
+      Logical instructions
+    */
+    case '!': /* Pop the element of the stack and negate it */
+        popped = stack_pop(&(ip_ptr)->stack);
+        if (popped) {
+            stack_push(&(ip_ptr)->stack, 0);
+            break;
+        }
+        stack_push(&(ip_ptr)->stack, 1);
+        break;
+    case '`': /* check if b > a. if yes push 1, else 0 */
+        a = stack_pop(&(ip_ptr)->stack);
+        b = stack_pop(&(ip_ptr)->stack);
+        if (b > a)
+            stack_push(&(ip_ptr)->stack, 1);
+        else
+            stack_push(&(ip_ptr)->stack, 0);
+        break;
+        
+        
     case '@': /* End program */
         return FALSE;
 
