@@ -53,6 +53,9 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         ip_ptr->row = (ip_ptr->row) * -1;
         ip_ptr->col = (ip_ptr->col) * -1;
         break;
+    case '#': /* Trampoline. Skip the next cell */
+        move_ip(ip_ptr, ip_ptr->direction);
+        
 
     /*
       Instructions to print stuff on screen
