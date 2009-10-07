@@ -16,7 +16,7 @@
  */
 
 #include "fungi.h"
-
+#include <math.h>
 
 int interpret_funge(InstructionPointer *ip_ptr, char **funge)
 {
@@ -27,7 +27,7 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
     int input;
     int move_along = TRUE;
     int invert_direction = FALSE;
-    int iter;
+    int iter, rand;
     char c; /* when we enter string mode */
     
     __debug("Processing %c\n", instruction);
@@ -56,6 +56,38 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
         break;
     case '#': /* Trampoline. Skip the next cell */
         move_ip(ip_ptr, ip_ptr->direction);
+        break;
+    case ']': /* Turn right */
+        switch(ip_ptr->direction) {
+        case MOVE_EAST:
+            ip_ptr->direction = MOVE_SOUTH;
+            break;
+        case MOVE_WEST:
+            ip_ptr->direction = MOVE_NORTH;
+            break;
+        case MOVE_SOUTH:
+            ip_ptr->direction = MOVE_WEST;
+            break;
+        case MOVE_NORTH:
+            ip_ptr->direction = MOVE_EAST;
+            break;
+        }
+        break;
+    case '[': /* Turn Left */
+        switch(ip_ptr->direction) {
+        case MOVE_EAST:
+            ip_ptr->direction = MOVE_NORTH;
+            break;
+        case MOVE_WEST:
+            ip_ptr->direction = MOVE_SOUTH;
+            break;
+        case MOVE_SOUTH:
+            ip_ptr->direction = MOVE_EAST;
+            break;
+        case MOVE_NORTH:
+            ip_ptr->direction = MOVE_WEST;
+            break;
+        }
         break;
     case 'j':
         popped = stack_pop(&(ip_ptr)->stack);
