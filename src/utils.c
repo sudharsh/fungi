@@ -63,7 +63,7 @@ char** get_funge(FILE *fptr, InstructionPointer *ip_ptr)
     char command;
 
     int i;
-    
+
     while( (curr_c = getc(fptr)) != EOF) {
         if (curr_c == '\n') {
             if (width < curr_width)
