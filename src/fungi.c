@@ -35,6 +35,7 @@ int load_source(const char *source)
     ip.row = 0;
     ip.col = 0;
     ip.direction = MOVE_EAST;
+    ip.iteration_count = 1;
     ip.stack = __get_node();
 
     /* Get the funge size in first pass and initialise the data structures accordingly */

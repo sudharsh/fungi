@@ -50,6 +50,7 @@ typedef struct _InstructionPointer {
     int col;
     int funge_height;
     int funge_width;
+    int iteration_count; /* Number of Iterations for the next count */
     char last_instruction;
     enum ip_direction direction;
     FStack *stack;    
