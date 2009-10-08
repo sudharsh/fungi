@@ -27,28 +27,28 @@ int update_ip_by_offset(InstructionPointer *ip_ptr, int dr, int dc)
     __debug("Moving by %d, %d\n" , dr, dc);
     __debug("Before: "); print_current_coordinates(ip_ptr);
     
-    if ((ip_ptr->row == ip_ptr->funge_height) && dr != 0) {
+    if ((ip_ptr->delta.row == ip_ptr->funge_height) && dr != 0) {
         __debug("Fixing torus\n");
-        ip_ptr->row = 0;
+        ip_ptr->delta.row = 0;
     }
     else
-        ip_ptr->row += dr;
+        ip_ptr->delta.row += dr;
             
-    if ((ip_ptr->col == ip_ptr->funge_width) && dc != 0) {
+    if ((ip_ptr->delta.col == ip_ptr->funge_width) && dc != 0) {
         __debug("Fixing torus\n");
-        ip_ptr->col = 0;
+        ip_ptr->delta.col = 0;
     }
     else
-        ip_ptr->col += dc;
+        ip_ptr->delta.col += dc;
 
     // If we have negative value, wrap it
-    if (ip_ptr->row < 0) {
+    if (ip_ptr->delta.row < 0) {
         __debug("Peeking my head over the other side\n");
-        ip_ptr->row = ip_ptr->funge_height - abs(dr);
+        ip_ptr->delta.row = ip_ptr->funge_height - abs(dr);
     }
-    if (ip_ptr->col < 0) {
+    if (ip_ptr->delta.col < 0) {
         __debug("Peeking my head over the other side\n");
-        ip_ptr->col = ip_ptr->funge_width - abs(dc);
+        ip_ptr->delta.col = ip_ptr->funge_width - abs(dc);
     }
            
     __debug("After: "); print_current_coordinates(ip_ptr);

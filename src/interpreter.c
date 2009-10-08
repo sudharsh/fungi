@@ -20,7 +20,7 @@
 
 int interpret_funge(InstructionPointer *ip_ptr, char **funge)
 {
-    char instruction = tolower(funge[ip_ptr->row][ip_ptr->col]);
+    char instruction = tolower(funge[ip_ptr->delta.row][ip_ptr->delta.col]);
 
     int a, b; /* For mathematical operations */
     int popped; /* popped right from the stack */
@@ -56,8 +56,8 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
             ip_ptr->direction = MOVE_SOUTH;
             break;
         case 'r': /* Reflect */
-            ip_ptr->row = (ip_ptr->row) * -1;
-            ip_ptr->col = (ip_ptr->col) * -1;
+            ip_ptr->delta.row = (ip_ptr->delta.row) * -1;
+            ip_ptr->delta.col = (ip_ptr->delta.col) * -1;
             break;
         case '#': /* Trampoline. Skip the next cell */
             move_ip(ip_ptr, ip_ptr->direction);
@@ -202,7 +202,7 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
             __debug("Entering string mode\n");
 
             /* Keep moving and pushing the character to the stack till we reach the matching '"' at the other end */
-            while((move_ip(ip_ptr, ip_ptr->direction)) && (c = funge[ip_ptr->row][ip_ptr->col]) != '"')
+            while((move_ip(ip_ptr, ip_ptr->direction)) && (c = funge[ip_ptr->delta.row][ip_ptr->delta.col]) != '"')
                 stack_push(&(ip_ptr)->stack, c);
 
             __debug("Leaving string mode %c\n", instruction);

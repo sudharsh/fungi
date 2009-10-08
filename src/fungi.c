@@ -24,7 +24,6 @@ int load_source(const char *source)
     InstructionPointer ip; /* Instruction Pointer */
     char **funge;
         
-    
     FILE *file_ptr = fopen(source, "r");
 
     if (!file_ptr) {
@@ -32,8 +31,9 @@ int load_source(const char *source)
 	    return FALSE;
     }
 
-    ip.row = 0;
-    ip.col = 0;
+    /* We don't support concurrent IPs yet */
+    ip.delta.row = 0;
+    ip.delta.col = 0;
     ip.direction = MOVE_EAST;
     ip.iteration_count = 1;
     ip.stack = __get_node();

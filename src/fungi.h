@@ -46,8 +46,10 @@ enum ip_direction {
 
 /* The InstructionPointer */
 typedef struct _InstructionPointer {
-    int row;
-    int col;
+    struct {
+        int row;
+        int col;
+    } delta;
     int funge_height;
     int funge_width;
     int iteration_count; /* Number of Iterations for the next count */

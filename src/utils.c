@@ -25,7 +25,7 @@
 
 /* Just a lazy helper function */
 void print_current_coordinates(InstructionPointer *ip_ptr) {
-    __debug("%d %d\n", ip_ptr->row, ip_ptr->col);
+    __debug("%d %d\n", ip_ptr->delta.row, ip_ptr->delta.col);
 }
 
 /* Taken from Linux code */
