@@ -27,8 +27,7 @@
 #include <config.h>
 #include <stdarg.h>
 
-#define DEBUG TRUE
-#undef DEBUG
+//#define DEBUG TRUE
 
 typedef struct _FStack {
     int value;
