@@ -88,3 +88,23 @@ char** get_funge(FILE *fptr, InstructionPointer *ip_ptr)
     
     return funge;
 }
+
+
+int cleanup(InstructionPointer *ip_ptr, char **funge, int exit_code_from_stack) {
+    int exit_code;
+    int height = 0;
+    if (exit_code_from_stack)
+        exit_code = stack_pop(&(ip_ptr)->stack);
+    else
+        exit_code = EXIT_SUCCESS;
+    
+    while (stack_pop(&(ip_ptr)->stack) != NULL)
+        ;
+
+    __debug("Clearing Funge\n");
+    for (height = 0; height < ip_ptr->funge_height; height++)
+        free(*(funge + height));
+    free(funge);
+    __debug("Cleaning up done. Exiting with code %d", exit_code);
+    return exit_code;
+}

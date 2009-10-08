@@ -22,6 +22,8 @@
 int load_source(const char *source)
 {
     InstructionPointer ip; /* Instruction Pointer */
+    int exit_code;
+    
     char **funge;
         
     FILE *file_ptr = fopen(source, "r");
@@ -40,21 +42,24 @@ int load_source(const char *source)
 
     /* Get the funge size in first pass and initialise the data structures accordingly */
     funge = get_funge(file_ptr, &ip);
+    fclose(file_ptr);
 
+    /* The main Intrepreter loop */
     while (interpret_funge(&ip, funge))
         ;
-                
-    /* Clean up stuff */        
-	fclose(file_ptr);
-    free(funge);
-    return TRUE;
+
+    /* Done interpreting. Cleanup */
+    __debug("Cleaning up..\n");
+    exit_code = cleanup(&ip, funge, FALSE);
+
+    return exit_code;
 }
 
 		 
 int main(int argc, char **argv) 
 {
     /* Use getopts? */
-	if (argc > 1)
-		load_source(argv[1]);
+    if (argc > 1)
+        load_source(argv[1]);
 	return 0;
 }

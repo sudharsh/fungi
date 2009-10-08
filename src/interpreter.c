@@ -198,8 +198,9 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
                         */
                     case '@': /* End current IP */
                         return FALSE;
-                    case 'q':
-                        exit(stack_pop(&(ip_ptr)->stack));
+                    case 'q': /* Exit after cleaning up. No concurrent IPs yet.
+                                 so is similar to '@' */
+                        exit(cleanup(ip_ptr, funge, TRUE));
 
                         /*
                           String Mode
@@ -265,7 +266,7 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
     if (move_along)
         move_ip(ip_ptr, ip_ptr->direction);
 
-    __debug("Finished processing '%s' instruction", instruction);
+    __debug("Finished processing '%c' instruction\n", instruction);
     __debug("-------------------------------\n");
     return TRUE;
 }

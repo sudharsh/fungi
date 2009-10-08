@@ -27,7 +27,7 @@
 #include <config.h>
 #include <stdarg.h>
 
-//#define DEBUG TRUE
+#define DEBUG TRUE
 
 typedef struct _FStack {
     int value;
@@ -78,4 +78,5 @@ int update_ip_by_offset(InstructionPointer *ip_ptr, int dr, int dc);
 /* Read the source file and initialise funge space */
 char** get_funge(FILE *fptr, InstructionPointer *ip);
 
-
+/* Cleanup routines */
+int cleanup(InstructionPointer *ip_ptr, char **funge, int exit_code_from_stack);

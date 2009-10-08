@@ -55,20 +55,20 @@ int stack_pop(FStack **ns) {
     int value;
     FStack *dummy;
 
-    if(*ns)
-        if((*ns)->index < 0) {
-            __debug("Stack is empty\n");
-            return;
+    if((*ns)->index == 0) {
+        __debug("Stack is empty\n");
+        return NULL;
         
-        } else {                 
-            value = (*ns)->value;
-            dummy = *ns;
-            *ns = (*ns)->next;
-            if (*ns) {
-                (*ns)->index = dummy->index - 1;
-                free(dummy);
-            }
+    } else {                 
+        value = (*ns)->value;
+        dummy = *ns;
+        *ns = (*ns)->next;
+        if (*ns) {
+            (*ns)->index = dummy->index - 1;
+            free(dummy);
         }
+    }
+    __debug("Popping %c\n", value);
     return value;
 }
 
