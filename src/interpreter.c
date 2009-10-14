@@ -164,6 +164,10 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
                         stack_push(&(ip_ptr)->stack, b);   
                         stack_push(&(ip_ptr)->stack, a);
                         break;
+                    case 'n': /* Clear Stack */
+                        while (stack_pop(&(ip_ptr)->stack) != NULL)
+                            ;
+                        break;
 
                         /*
                           Conditional Instructions

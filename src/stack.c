@@ -68,9 +68,11 @@ int stack_pop(FStack **ns) {
             free(dummy);
         }
     }
-    __debug("Popping %c\n", value);
+    __debug("Popping %d\n", value);
     return value;
 }
+
+
 
     
     

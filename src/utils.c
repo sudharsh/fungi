@@ -82,7 +82,7 @@ char** get_funge(FILE *fptr, InstructionPointer *ip_ptr)
     ip_ptr->funge_width = width;
     
     funge = (char **) malloc(height * sizeof(char *));
-    for(i = 0; i <= height; i++) {
+    for(i = 0; i < height; i++) {
         funge[i] = (char *) malloc (width * sizeof(char *));
         fgets(strstrip(funge[i]), width + 2, fptr);
         __debug("Line %d: %s\n", i, strstrip(funge[i]));
@@ -120,7 +120,7 @@ int __get_random_direction()
 
 int cleanup(InstructionPointer *ip_ptr, char **funge, int exit_code_from_stack) {
     int exit_code;
-    int height = 0;
+    int height, width = 0;
     if (exit_code_from_stack)
         exit_code = stack_pop(&(ip_ptr)->stack);
     else
@@ -130,9 +130,10 @@ int cleanup(InstructionPointer *ip_ptr, char **funge, int exit_code_from_stack) 
         ;
 
     __debug("Clearing Funge\n");
-    for (height = 0; height < ip_ptr->funge_height; height++)
-        free(*(funge + height));
+    for (height = 0; height < ip_ptr->funge_height; height++) {
+        free(funge[height]);
+    } 
     free(funge);
-    __debug("Cleaning up done. Exiting with code %d", exit_code);
+    __debug("Cleaning up done. Exiting with code %d\n", exit_code);
     return exit_code;
 }
