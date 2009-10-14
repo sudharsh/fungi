@@ -67,6 +67,8 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
                     case '#': /* Trampoline. Skip the next cell */
                         move_ip(ip_ptr, ip_ptr->direction);
                         break;
+                        
+                    turn_right: /* Hehe :D */
                     case ']': /* Turn right */
                         switch(ip_ptr->direction) {
                         case MOVE_EAST:
@@ -83,6 +85,7 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
                             break;
                         }
                         break;
+                    turn_left: /* I ain't afraid of no steenking velociraptor */
                     case '[': /* Turn Left */
                         switch(ip_ptr->direction) {
                         case MOVE_EAST:
@@ -179,7 +182,7 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
                         else
                             ip_ptr->direction = MOVE_SOUTH;
                         break;
-
+                   
                         /*
                           Logical instructions
                         */
@@ -199,6 +202,15 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
                         else
                             stack_push(&(ip_ptr)->stack, 0);
                         break;
+                    case 'w':
+                        a = stack_pop(&(ip_ptr)->stack);
+                        b = stack_pop(&(ip_ptr)->stack);
+                        if (b > a)
+                            goto turn_right;
+                        else
+                            if (b < a)
+                                goto turn_left;
+                        break; /* Don't change the delta */                        
 
                         /*
                           fungi process controller
