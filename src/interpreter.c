@@ -114,6 +114,9 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
                         __debug("Next instruction will be executed %d times\n", popped);
                         next_instruction_iter_count = popped;
                         break;
+                    case '?':
+                        ip_ptr->direction = __get_random_direction();
+                        break;
         
                         /*
                           Instructions to print stuff on screen

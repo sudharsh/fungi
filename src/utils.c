@@ -21,6 +21,8 @@
 
 
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
 #include "fungi.h"
 
 /* Just a lazy helper function */
@@ -88,6 +90,32 @@ char** get_funge(FILE *fptr, InstructionPointer *ip_ptr)
     
     return funge;
 }
+
+
+int __get_random_direction()
+{
+    int val;
+    int inverse = 1;
+    struct timeval tm;
+
+    gettimeofday(&tm, NULL);
+    srand(tm.tv_usec);
+
+    /* Get a random number 0,1 and add 1 to it */
+    val = (int)(2.0 * rand() / ( RAND_MAX + 1.0 ) ) + 1;
+    
+    printf("%d\n", val);
+
+    gettimeofday(&tm, NULL);
+    srand(tm.tv_usec);
+
+    if ((int)(2.0 * rand() / ( RAND_MAX + 1.0 ) ) == 0)
+        inverse = -1;
+    
+    printf("%d\n", val * inverse);
+    return val * inverse;
+}
+        
 
 
 int cleanup(InstructionPointer *ip_ptr, char **funge, int exit_code_from_stack) {
