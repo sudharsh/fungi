@@ -117,6 +117,10 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
                     case '?':
                         ip_ptr->direction = __get_random_direction();
                         break;
+                    case 'x': /* Absolute vector */
+                        update_ip_by_offset(ip_ptr, stack_pop(&(ip_ptr)->stack),
+                                            stack_pop(&(ip_ptr)->stack));
+                        break;
         
                         /*
                           Instructions to print stuff on screen
