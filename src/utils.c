@@ -104,7 +104,7 @@ int __get_random_direction()
     /* Get a random number 0,1 and add 1 to it */
     val = (int)(2.0 * rand() / ( RAND_MAX + 1.0 ) ) + 1;
     
-    printf("%d\n", val);
+    __debug("%d\n", val);
 
     gettimeofday(&tm, NULL);
     srand(tm.tv_usec);
@@ -112,7 +112,7 @@ int __get_random_direction()
     if ((int)(2.0 * rand() / ( RAND_MAX + 1.0 ) ) == 0)
         inverse = -1;
     
-    printf("%d\n", val * inverse);
+    __debug("%d\n", val * inverse);
     return val * inverse;
 }
         
