@@ -33,12 +33,10 @@ FStack *__get_node()
 void stack_push(FStack **ns, int nw)
 {
     FStack *node = __get_node();
-    int prev_idx = 0;
+    int prev_idx = -1;
     
     if (*ns)
         prev_idx = (*ns)->index;
-    else
-        prev_idx = -1;
     node->value = nw;                          
     node->next = NULL;
         
@@ -46,7 +44,7 @@ void stack_push(FStack **ns, int nw)
     *ns = node;
     (*ns)->index = prev_idx + 1;
     __debug("Pushed %d. Size is now %d\n", nw, (*ns)->index);
-    return;
+    
 }
 
 
@@ -56,6 +54,7 @@ int stack_pop(FStack **ns) {
     FStack *dummy;
 
     if((*ns)->index == 0) {
+        free(*ns);
         __debug("Stack is empty\n");
         return NULL;
         

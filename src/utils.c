@@ -132,7 +132,7 @@ int cleanup(InstructionPointer *ip_ptr, char **funge, int exit_code_from_stack) 
     __debug("Clearing Funge\n");
     for (height = 0; height < ip_ptr->funge_height; height++) {
         free(funge[height]);
-    } 
+    }
     free(funge);
     __debug("Cleaning up done. Exiting with code %d\n", exit_code);
     return exit_code;
