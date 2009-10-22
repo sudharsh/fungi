@@ -161,8 +161,10 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
                     case '\\': /* Swap the top 2 elements */
                         a = stack_pop(&(ip_ptr)->stack);
                         b = stack_pop(&(ip_ptr)->stack);
-                        stack_push(&(ip_ptr)->stack, b);   
-                        stack_push(&(ip_ptr)->stack, a);
+                        printf("%d, %d\n", a, b);
+                                                    
+                        stack_push(&(ip_ptr)->stack, a);   
+                        stack_push(&(ip_ptr)->stack, b);
                         break;
                     case 'n': /* Clear Stack */
                         while (stack_pop(&(ip_ptr)->stack) != NULL)
@@ -266,7 +268,7 @@ int interpret_funge(InstructionPointer *ip_ptr, char **funge)
                                 case '+':
                                     stack_push(&(ip_ptr)->stack, a+b);
                                     break;
-                                case '_':
+                                case '-':
                                     stack_push(&(ip_ptr)->stack, b-a);
                                     break;
                                 case '%':
