@@ -7,6 +7,7 @@ fungi_SOURCES = \
 	cartographer.c \
 	utils.c \
 	stack.c \
+	stack.h \
 	fungi.c \
 	fungi.h \
 	$(NULL)

@@ -20,70 +20,67 @@
  */ 
 
 #include "fungi.h"
+#include <assert.h>
 
-
-FStack *__get_node()
+static FStackNode *__get_node()
 {
-    FStack *node;
-    node = (FStack *) malloc(sizeof(FStack));
+    FStackNode *node = NULL;
+    node = (FStackNode *) malloc(sizeof(FStackNode));
     return node;
 }
 
 
-void stack_push(FStack **ns, int nw)
+FStack *stack_push(FStack *ns, int nw)
 {
-    FStack *node = __get_node();
-    int prev_idx = -1;
-    
-    if (*ns)
-        prev_idx = (*ns)->index;
-    node->value = nw;                          
-    node->next = NULL;
-        
-    node->next = *ns;
-    *ns = node;
-    (*ns)->index = prev_idx + 1;
-    __debug("Pushed %d. Size is now %d\n", nw, (*ns)->index);
-    
-}
-
-
-
-int stack_pop(FStack **ns) {
-    int value;
-    FStack *dummy;
-
-    if((*ns)->index == 0) {
-        free(*ns);
-        __debug("Stack is empty\n");
-        return NULL;
-        
-    } else {                 
-        value = (*ns)->value;
-        dummy = *ns;
-        *ns = (*ns)->next;
-        if (*ns) {
-            (*ns)->index = dummy->index - 1;
-            free(dummy);
-        }
+    __debug("Pushing to %p\n", ns);
+    int index;
+    FStackNode *new_node;
+    new_node = __get_node();
+    new_node->value = nw;
+    if (!ns) {
+        new_node->prev = NULL;
+        ns = malloc(sizeof(FStack));
+        ns->size = 0;
     }
-    __debug("Popping %d\n", value);
-    return value;
+    else
+        new_node->prev = ns->top;
+    ns->top = new_node;
+    ns->size++;
+    __debug("PUSH: Stack %p --> Size:%d Top:%p\n", ns, ns->size, ns->top);
+    return ns;
 }
 
 
-
+int stack_pop(FStack *ns) {
+    FStackNode *top;
+    int topval;
+    if (!ns) {
+        __debug("Null stack\n");
+        return NULL;
+    }
+    if (ns->size == 0 && !ns->top) {
+        __debug("Empty stack\n");
+        return NULL;
+    }
+    top = ns->top;
+    topval = top->value;
+    ns->top = ns->top->prev;
+    free(top);
+    ns->size--;
+    __debug("POP: Stack %p --> Size:%d Stack top:%p\n", ns, ns->size, ns->top);
+    return topval;
+}
     
     
 int test_stack() {
     FStack *ns = __get_node();
-    stack_push(&ns, 5);
-    stack_push(&ns, 4);
-    __debug("Popped : %d\n", stack_pop(&ns));
-    __debug("Popped : %d\n", stack_pop(&ns));
-    __debug("Popped : %d\n", stack_pop(&ns));
-    __debug("Popped : %d\n", stack_pop(&ns));
-    stack_push(&ns, 6);
-    __debug("Popped : %d\n", stack_pop(&ns));
+    stack_push(ns, 5);
+    stack_push(ns, 4);
+    __debug("Popped : %d\n", stack_pop(ns));
+    __debug("Popped : %d\n", stack_pop(ns));
+    __debug("Popped : %d\n", stack_pop(ns));
+    __debug("Popped : %d\n", stack_pop(ns));
+    stack_push(ns, 6);
+    __debug("Popped : %d\n", stack_pop(ns));
 }
     

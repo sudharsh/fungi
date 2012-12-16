@@ -118,19 +118,19 @@ int __get_random_direction()
         
 
 
-int cleanup(InstructionPointer *ip_ptr, char **funge, int exit_code_from_stack) {
+int cleanup(InstructionPointer *ip, char **funge, int exit_code_from_stack) {
     int exit_code;
     int height, width = 0;
     if (exit_code_from_stack)
-        exit_code = stack_pop(&(ip_ptr)->stack);
+        exit_code = stack_pop(ip->stack);
     else
         exit_code = EXIT_SUCCESS;
     
-    while (stack_pop(&(ip_ptr)->stack) != NULL)
+    while (INSTRUCTION_POP(ip) != NULL)
         ;
 
     __debug("Clearing Funge\n");
-    for (height = 0; height < ip_ptr->funge_height; height++) {
+    for (height = 0; height < ip->funge_height; height++) {
         free(funge[height]);
     }
     free(funge);
