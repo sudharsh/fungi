@@ -22,19 +22,15 @@
 //#include "utils.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <error.h>
+#include <errno.h>
 #include <ctype.h>
 #include <config.h>
 #include <stdarg.h>
 
+#include "stack.h"
+
 #define DEBUG TRUE
 #undef DEBUG
-
-typedef struct _FStack {
-    int value;
-    int index;
-    struct _FStack *next;
-} FStack;
 
 enum ip_direction {
     MOVE_WEST = 1,
@@ -61,13 +57,6 @@ typedef struct _InstructionPointer {
 
 int __debug(const char *message, ...);
 
-/* Create a node (or) a new stack */
-FStack *__get_node();
-
-void stack_push(FStack **ns, int nw);
-
-int stack_pop(FStack **ns);
-
 int interpret_funge(InstructionPointer *ip_ptr, char **funge);
 
 /* A helper function */
@@ -81,3 +70,7 @@ char** get_funge(FILE *fptr, InstructionPointer *ip);
 
 /* Cleanup routines */
 int cleanup(InstructionPointer *ip_ptr, char **funge, int exit_code_from_stack);
+
+
+#define INSTRUCTION_PUSH(IP, VAL) IP->stack = stack_push(IP->stack, VAL)
+#define INSTRUCTION_POP(IP)  stack_pop(IP->stack)
